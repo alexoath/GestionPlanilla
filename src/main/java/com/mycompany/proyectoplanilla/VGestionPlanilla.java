@@ -14,13 +14,19 @@ import javax.swing.table.DefaultTableModel;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Box;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -37,6 +43,8 @@ public class VGestionPlanilla extends javax.swing.JFrame {
      */
     public VGestionPlanilla() {
         initComponents();
+        cargarFechas();
+
     }
 
     /**
@@ -50,7 +58,7 @@ public class VGestionPlanilla extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        JtReporte = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -60,25 +68,26 @@ public class VGestionPlanilla extends javax.swing.JFrame {
         LbNombre = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         JtableCsv = new javax.swing.JTable();
-        jButton5 = new javax.swing.JButton();
+        BtReporte = new javax.swing.JButton();
+        JboxPeriodo = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("GESTION DE PLANILLAS");
         jLabel1.setToolTipText("");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        JtReporte.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "id", "Cod. Empresa", "Nombre Empresa", "Cod. Empleado", "Nombre Empleado", "Periodo", "Sueldo", "Estado"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(JtReporte);
 
         jButton1.setText("Cargar .csv");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -126,97 +135,158 @@ public class VGestionPlanilla extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(JtableCsv);
 
-        jButton5.setText("Ver Reporte");
+        BtReporte.setText("Ver Reporte");
+        BtReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtReporteActionPerformed(evt);
+            }
+        });
+
+        JboxPeriodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Periodo" }));
+        JboxPeriodo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JboxPeriodoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(36, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(16, 16, 16))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(9, 9, 9)
-                                    .addComponent(jButton2))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGap(22, 22, 22)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(JtNo, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(18, 18, 18)
-                                            .addComponent(BtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(LbNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                            .addGap(37, 37, 37)))
-                    .addComponent(jButton5)))
             .addGroup(layout.createSequentialGroup()
-                .addGap(220, 220, 220)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(74, 74, 74)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(22, 22, 22)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(LbNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(JtNo, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(58, 58, 58)
+                                .addComponent(BtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)))
+                        .addGap(100, 100, 100))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(41, 41, 41)
+                                .addComponent(jButton2))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(BtReporte)
+                                .addGap(30, 30, 30)
+                                .addComponent(JboxPeriodo, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 772, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(7, 7, 7)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(BtBuscar)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JtNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JtNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BtBuscar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(LbNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addGap(18, 18, 18)
+                .addGap(24, 24, 24)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BtReporte)
+                    .addComponent(JboxPeriodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtBuscarActionPerformed
-        String codigoEmpresa = JtNo.getText();
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            String sql = "SELECT nombre FROM empresas WHERE codigo = ?";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, codigoEmpresa);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        String nombreEmpresa = resultSet.getString("nombre");
-                        LbNombre.setText(nombreEmpresa);
+String codigoEmpresa = JtNo.getText();
+try (Connection connection = DatabaseConnection.getConnection()) {
+    String sql = "SELECT nombre FROM empresas WHERE codigo = ?";
+    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        statement.setString(1, codigoEmpresa);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                String nombreEmpresa = resultSet.getString("nombre");
+                LbNombre.setText(nombreEmpresa);
+            } else {
+                int option = JOptionPane.showConfirmDialog(null, "Empresa no encontrada, ¿desea inscribirla?", "Empresa no encontrada", JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
+                    JTextField codigoField = new JTextField(10);
+                    JTextField nombreField = new JTextField(10);
+                    JPanel panel = new JPanel();
+                    panel.add(new JLabel("Código:"));
+                    panel.add(codigoField);
+                    panel.add(Box.createHorizontalStrut(15)); // Espacio entre los campos
+                    panel.add(new JLabel("Nombre:"));
+                    panel.add(nombreField);
+
+                    int result = JOptionPane.showConfirmDialog(null, panel, "Inscribir Empresa", JOptionPane.OK_CANCEL_OPTION);
+                    if (result == JOptionPane.OK_OPTION) {
+                        String nuevoCodigo = codigoField.getText();
+                        String nuevoNombre = nombreField.getText();
+                        if (!nuevoCodigo.isEmpty() && !nuevoNombre.isEmpty()) {
+                            String insertSql = "INSERT INTO empresas (codigo, nombre) VALUES (?, ?)";
+                            try (PreparedStatement insertStatement = connection.prepareStatement(insertSql)) {
+                                insertStatement.setString(1, nuevoCodigo);
+                                insertStatement.setString(2, nuevoNombre);
+                                insertStatement.executeUpdate();
+                                LbNombre.setText(nuevoNombre);
+                                JOptionPane.showMessageDialog(null, "Empresa inscrita exitosamente.");
+                            } catch (SQLException ex) {
+                                ex.printStackTrace();
+                                LbNombre.setText("Error al inscribir la empresa.");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Debe ingresar un código y un nombre válidos.");
+                            LbNombre.setText("Empresa no encontrada, debe inscribirla antes de continuar");
+                        }
                     } else {
                         LbNombre.setText("Empresa no encontrada, debe inscribirla antes de continuar");
                     }
+                } else {
+                    LbNombre.setText("Empresa no encontrada, debe inscribirla antes de continuar");
                 }
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            LbNombre.setText("Error al buscar la empresa.");
         }
-
+    }
+} catch (SQLException ex) {
+    ex.printStackTrace();
+    LbNombre.setText("Error al buscar la empresa.");
+}
     }//GEN-LAST:event_BtBuscarActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+// Validar si LbNombre está vacío o contiene el mensaje de error antes de abrir el JFileChooser
+        String empresaNombre = LbNombre.getText();
+        if (empresaNombre.isEmpty() || empresaNombre.equals("Empresa no encontrada, debe inscribirla antes de continuar")) {
+            JOptionPane.showMessageDialog(null, "Empresa no encontrada, debe inscribirla antes de continuar.");
+            return;
+        }
 
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(null);
@@ -249,152 +319,255 @@ public class VGestionPlanilla extends javax.swing.JFrame {
             }
         }
 
-
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-    Connection connection = null;
-    PreparedStatement psPlanillas = null;
-    PreparedStatement psCheckPlanilla = null;
-    PreparedStatement psCheckEmpleado = null;
-    PreparedStatement psInsertEmpleado = null;
-    PreparedStatement psCheckEstadoAnterior = null;
+        Connection connection = null;
+        PreparedStatement psPlanillas = null;
+        PreparedStatement psCheckPlanilla = null;
+        PreparedStatement psCheckEmpleado = null;
+        PreparedStatement psInsertEmpleado = null;
+        PreparedStatement psCheckEstadoAnterior = null;
+        PreparedStatement psCheckEmpresa = null;
 
-    try {
-        connection = DatabaseConnection.getConnection();
-        connection.setAutoCommit(false);
+        try {
+            connection = DatabaseConnection.getConnection();
+            connection.setAutoCommit(false);
 
-        String sqlPlanillas = "INSERT INTO planillas (id, empresa_codigo, empleado_codigo, periodo, sueldo, estado) VALUES (planillas_seq.NEXTVAL, ?, ?, TO_DATE(?, 'YYYY-MM-DD'), ?, ?)";
-        String sqlCheckPlanilla = "SELECT 1 FROM planillas WHERE empresa_codigo = ? AND empleado_codigo = ? AND periodo = TO_DATE(?, 'YYYY-MM-DD')";
-        String sqlCheckEmpleado = "SELECT 1 FROM empleados WHERE codigo = ?";
-        String sqlInsertEmpleado = "INSERT INTO empleados (codigo, nombre) VALUES (?, ?)";
-        String sqlCheckEstadoAnterior = "SELECT estado FROM planillas WHERE empleado_codigo = ? ORDER BY periodo DESC FETCH FIRST 1 ROWS ONLY";
+            String sqlPlanillas = "INSERT INTO planillas (id, empresa_codigo, empresa_nombre, empleado_codigo, empleado_nombre, periodo, sueldo, estado) VALUES (planillas_seq.NEXTVAL, ?, ?, ?, ?, TO_DATE(?, 'YYYY-MM-DD'), ?, ?)";
+            String sqlCheckPlanilla = "SELECT 1 FROM planillas WHERE empresa_codigo = ? AND empleado_codigo = ? AND periodo = TO_DATE(?, 'YYYY-MM-DD')";
+            String sqlCheckEmpleado = "SELECT 1 FROM empleados WHERE codigo = ?";
+            String sqlInsertEmpleado = "INSERT INTO empleados (codigo, nombre) VALUES (?, ?)";
+            String sqlCheckEstadoAnterior = "SELECT estado FROM planillas WHERE empleado_codigo = ? ORDER BY periodo DESC FETCH FIRST 1 ROWS ONLY";
+            String sqlCheckEmpresa = "SELECT 1 FROM empresas WHERE codigo = ?";
 
-        psPlanillas = connection.prepareStatement(sqlPlanillas);
-        psCheckPlanilla = connection.prepareStatement(sqlCheckPlanilla);
-        psCheckEmpleado = connection.prepareStatement(sqlCheckEmpleado);
-        psInsertEmpleado = connection.prepareStatement(sqlInsertEmpleado);
-        psCheckEstadoAnterior = connection.prepareStatement(sqlCheckEstadoAnterior);
+            psPlanillas = connection.prepareStatement(sqlPlanillas);
+            psCheckPlanilla = connection.prepareStatement(sqlCheckPlanilla);
+            psCheckEmpleado = connection.prepareStatement(sqlCheckEmpleado);
+            psInsertEmpleado = connection.prepareStatement(sqlInsertEmpleado);
+            psCheckEstadoAnterior = connection.prepareStatement(sqlCheckEstadoAnterior);
+            psCheckEmpresa = connection.prepareStatement(sqlCheckEmpresa);
 
-        DefaultTableModel tableModel = (DefaultTableModel) JtableCsv.getModel();
-        int rowCount = tableModel.getRowCount();
+            DefaultTableModel tableModel = (DefaultTableModel) JtableCsv.getModel();
+            int rowCount = tableModel.getRowCount();
 
-        int empresaCodigo = Integer.parseInt(JtNo.getText());
-        System.out.println("Empresa Código: " + empresaCodigo);
+            int empresaCodigo = Integer.parseInt(JtNo.getText());
+            String empresaNombre = LbNombre.getText(); // Obtener el nombre de la empresa desde LbNombre
+            System.out.println("Empresa Código: " + empresaCodigo);
+            System.out.println("Empresa Nombre: " + empresaNombre);
 
-        // Primera fase: Validaciones
-        for (int i = 0; i < rowCount; i++) {
-            int empleadoCodigo = Integer.parseInt(tableModel.getValueAt(i, 0).toString());
-            String periodo = tableModel.getValueAt(i, 2).toString();
-            String estado = tableModel.getValueAt(i, 4).toString();
-
-            System.out.println("Validando fila: " + (i + 1));
-            System.out.println("Empleado Código: " + empleadoCodigo);
-            System.out.println("Periodo: " + periodo);
-
-            // Validar que no se cargue la misma planilla de la misma empresa, empleado y periodo
-            psCheckPlanilla.setInt(1, empresaCodigo);
-            psCheckPlanilla.setInt(2, empleadoCodigo);
-            psCheckPlanilla.setString(3, periodo);
-            ResultSet rsPlanilla = psCheckPlanilla.executeQuery();
-            if (rsPlanilla.next()) {
-                System.out.println("Planilla ya existe para empresa " + empresaCodigo + ", empleado " + empleadoCodigo + " y periodo " + periodo);
-                JOptionPane.showMessageDialog(null, "Error: La planilla de la empresa " + empresaCodigo + ", empleado " + empleadoCodigo + " para el periodo " + periodo + " ya existe.");
+            // Validar que la empresa exista
+            psCheckEmpresa.setInt(1, empresaCodigo);
+            ResultSet rsEmpresa = psCheckEmpresa.executeQuery();
+            if (!rsEmpresa.next()) {
+                System.out.println("Error: La empresa con código " + empresaCodigo + " no existe.");
+                JOptionPane.showMessageDialog(null, "Error: La empresa con código " + empresaCodigo + " no existe.");
                 return;
             }
 
-            // Validar el estado anterior del empleado
-            psCheckEstadoAnterior.setInt(1, empleadoCodigo);
-            ResultSet rsEstadoAnterior = psCheckEstadoAnterior.executeQuery();
-            if (rsEstadoAnterior.next()) {
-                String estadoAnterior = rsEstadoAnterior.getString("estado");
-                System.out.println("Estado anterior del empleado " + empleadoCodigo + ": " + estadoAnterior);
-                if (estado.equals("N") && !estadoAnterior.equals("A")) {
+            // Primera fase: Validaciones
+            for (int i = 0; i < rowCount; i++) {
+                int empleadoCodigo = Integer.parseInt(tableModel.getValueAt(i, 0).toString());
+                String periodo = tableModel.getValueAt(i, 2).toString();
+                String estado = tableModel.getValueAt(i, 4).toString();
+                double sueldo = Double.parseDouble(tableModel.getValueAt(i, 3).toString());
+
+                System.out.println("Validando fila: " + (i + 1));
+                System.out.println("Empleado Código: " + empleadoCodigo);
+                System.out.println("Periodo: " + periodo);
+
+                // Validar que no se cargue la misma planilla de la misma empresa, empleado y periodo
+                psCheckPlanilla.setInt(1, empresaCodigo);
+                psCheckPlanilla.setInt(2, empleadoCodigo);
+                psCheckPlanilla.setString(3, periodo);
+                ResultSet rsPlanilla = psCheckPlanilla.executeQuery();
+                if (rsPlanilla.next()) {
+                    System.out.println("Planilla ya existe para empresa " + empresaCodigo + ", empleado " + empleadoCodigo + " y periodo " + periodo);
+                    JOptionPane.showMessageDialog(null, "Error: La planilla de la empresa " + empresaCodigo + ", empleado " + empleadoCodigo + " para el periodo " + periodo + " ya existe.");
+                    return;
+                }
+
+                // Validar el estado anterior del empleado
+                psCheckEstadoAnterior.setInt(1, empleadoCodigo);
+                ResultSet rsEstadoAnterior = psCheckEstadoAnterior.executeQuery();
+                if (rsEstadoAnterior.next()) {
+                    String estadoAnterior = rsEstadoAnterior.getString("estado");
+                    System.out.println("Estado anterior del empleado " + empleadoCodigo + ": " + estadoAnterior);
+                    if (estado.equals("N") && !estadoAnterior.equals("A")) {
+                        System.out.println("Error: El estado 'N' no puede ser cargado sin un estado 'A' anterior para el empleado " + empleadoCodigo);
+                        JOptionPane.showMessageDialog(null, "Error: El estado 'N' no puede ser cargado sin un estado 'A' anterior para el empleado " + empleadoCodigo);
+                        return;
+                    }
+                } else if (estado.equals("N")) {
                     System.out.println("Error: El estado 'N' no puede ser cargado sin un estado 'A' anterior para el empleado " + empleadoCodigo);
                     JOptionPane.showMessageDialog(null, "Error: El estado 'N' no puede ser cargado sin un estado 'A' anterior para el empleado " + empleadoCodigo);
                     return;
                 }
-            } else if (estado.equals("N")) {
-                System.out.println("Error: El estado 'N' no puede ser cargado sin un estado 'A' anterior para el empleado " + empleadoCodigo);
-                JOptionPane.showMessageDialog(null, "Error: El estado 'N' no puede ser cargado sin un estado 'A' anterior para el empleado " + empleadoCodigo);
-                return;
+
+                // Validar que el sueldo sea 0 si el estado es "S"
+                if (estado.equals("S") && sueldo != 0) {
+                    System.out.println("Error: El estado 'S' debe tener un sueldo de 0 para el empleado " + empleadoCodigo);
+                    JOptionPane.showMessageDialog(null, "Error: El estado 'S' debe tener un sueldo de 0 para el empleado " + empleadoCodigo);
+                    return;
+                }
+
+                // Validar que el sueldo sea mayor a 0 si el estado es "A", "N" o "B"
+                if ((estado.equals("A") || estado.equals("N") || estado.equals("B")) && sueldo <= 0) {
+                    System.out.println("Error: El estado '" + estado + "' debe tener un sueldo mayor a 0 para el empleado " + empleadoCodigo);
+                    JOptionPane.showMessageDialog(null, "Error: El estado '" + estado + "' debe tener un sueldo mayor a 0 para el empleado " + empleadoCodigo);
+                    return;
+                }
+            }
+
+            // Segunda fase: Inserciones
+            for (int i = 0; i < rowCount; i++) {
+                int empleadoCodigo = Integer.parseInt(tableModel.getValueAt(i, 0).toString());
+                String empleadoNombre = tableModel.getValueAt(i, 1).toString();
+                String periodo = tableModel.getValueAt(i, 2).toString();
+                double sueldo = Double.parseDouble(tableModel.getValueAt(i, 3).toString());
+                String estado = tableModel.getValueAt(i, 4).toString();
+
+                System.out.println("Insertando fila: " + (i + 1));
+                System.out.println("Empleado Código: " + empleadoCodigo);
+                System.out.println("Empleado Nombre: " + empleadoNombre);
+                System.out.println("Periodo: " + periodo);
+
+                // Verificar si el empleado existe
+                psCheckEmpleado.setInt(1, empleadoCodigo);
+                ResultSet rsEmpleado = psCheckEmpleado.executeQuery();
+                if (!rsEmpleado.next()) {
+                    // Insertar en la tabla empleados si no existe
+                    System.out.println("Insertando empleado: " + empleadoCodigo + ", Nombre: " + empleadoNombre);
+                    psInsertEmpleado.setInt(1, empleadoCodigo);
+                    psInsertEmpleado.setString(2, empleadoNombre);
+                    psInsertEmpleado.executeUpdate();
+                }
+
+                // Configurar los parámetros del PreparedStatement para la tabla planillas
+                psPlanillas.setInt(1, empresaCodigo);
+                psPlanillas.setString(2, empresaNombre);
+                psPlanillas.setInt(3, empleadoCodigo);
+                psPlanillas.setString(4, empleadoNombre);
+                psPlanillas.setString(5, periodo); // Asegúrate de que el formato de fecha sea correcto
+                psPlanillas.setDouble(6, sueldo);
+                psPlanillas.setString(7, estado);
+
+                psPlanillas.executeUpdate();
+            }
+
+            connection.commit();
+            JOptionPane.showMessageDialog(null, "Datos cargados exitosamente a la base de datos.");
+            cargarFechas();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                }
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+            JOptionPane.showMessageDialog(null, "Error al cargar los datos: " + ex.getMessage());
+        } finally {
+            try {
+                if (psPlanillas != null) {
+                    psPlanillas.close();
+                }
+                if (psCheckPlanilla != null) {
+                    psCheckPlanilla.close();
+                }
+                if (psCheckEmpleado != null) {
+                    psCheckEmpleado.close();
+                }
+                if (psInsertEmpleado != null) {
+                    psInsertEmpleado.close();
+                }
+                if (psCheckEstadoAnterior != null) {
+                    psCheckEstadoAnterior.close();
+                }
+                if (psCheckEmpresa != null) {
+                    psCheckEmpresa.close();
+                }
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
         }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
-        // Segunda fase: Inserciones
-        for (int i = 0; i < rowCount; i++) {
-            int empleadoCodigo = Integer.parseInt(tableModel.getValueAt(i, 0).toString());
-            String empleadoNombre = tableModel.getValueAt(i, 1).toString();
-            String periodo = tableModel.getValueAt(i, 2).toString();
-            double sueldo = Double.parseDouble(tableModel.getValueAt(i, 3).toString());
-            String estado = tableModel.getValueAt(i, 4).toString();
+    private void JboxPeriodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JboxPeriodoActionPerformed
 
-            System.out.println("Insertando fila: " + (i + 1));
-            System.out.println("Empleado Código: " + empleadoCodigo);
-            System.out.println("Periodo: " + periodo);
+    }
 
-            // Verificar si el empleado existe
-            psCheckEmpleado.setInt(1, empleadoCodigo);
-            ResultSet rsEmpleado = psCheckEmpleado.executeQuery();
-            if (!rsEmpleado.next()) {
-                // Insertar en la tabla empleados si no existe
-                System.out.println("Insertando empleado: " + empleadoCodigo + ", Nombre: " + empleadoNombre);
-                psInsertEmpleado.setInt(1, empleadoCodigo);
-                psInsertEmpleado.setString(2, empleadoNombre);
-                psInsertEmpleado.executeUpdate();
+    private void cargarFechas() {
+        // Limpiar el JComboBox antes de agregar nuevas fechas
+        JboxPeriodo.removeAllItems();
+
+        // Conectar a la base de datos y obtener las fechas disponibles
+        try (Connection connection = DatabaseConnection.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery("SELECT DISTINCT TO_CHAR(periodo, 'YYYY-MM-DD') AS periodo FROM planillas ORDER BY periodo")) {
+
+            while (resultSet.next()) {
+                JboxPeriodo.addItem(resultSet.getString("periodo"));
             }
 
-            // Configurar los parámetros del PreparedStatement para la tabla planillas
-            psPlanillas.setInt(1, empresaCodigo);
-            psPlanillas.setInt(2, empleadoCodigo);
-            psPlanillas.setString(3, periodo); // Asegúrate de que el formato de fecha sea correcto
-            psPlanillas.setDouble(4, sueldo);
-            psPlanillas.setString(5, estado);
-
-            psPlanillas.executeUpdate();
-        }
-
-        connection.commit();
-        JOptionPane.showMessageDialog(null, "Datos cargados exitosamente a la base de datos.");
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-        try {
-            if (connection != null) {
-                connection.rollback();
-            }
-        } catch (SQLException rollbackEx) {
-            rollbackEx.printStackTrace();
-        }
-        JOptionPane.showMessageDialog(null, "Error al cargar los datos: " + ex.getMessage());
-    } finally {
-        try {
-            if (psPlanillas != null) {
-                psPlanillas.close();
-            }
-            if (psCheckPlanilla != null) {
-                psCheckPlanilla.close();
-            }
-            if (psCheckEmpleado != null) {
-                psCheckEmpleado.close();
-            }
-            if (psInsertEmpleado != null) {
-                psInsertEmpleado.close();
-            }
-            if (psCheckEstadoAnterior != null) {
-                psCheckEstadoAnterior.close();
-            }
-            if (connection != null) {
-                connection.setAutoCommit(true);
-                connection.close();
+            // Verificar si se han agregado fechas
+            if (JboxPeriodo.getItemCount() == 0) {
+                JOptionPane.showMessageDialog(this, "No se encontraron fechas en la base de datos.");
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al cargar las fechas: " + ex.getMessage());
+        }
+
+    }//GEN-LAST:event_JboxPeriodoActionPerformed
+
+    private void BtReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtReporteActionPerformed
+
+        verReporte();
+
+    }//GEN-LAST:event_BtReporteActionPerformed
+
+    private void verReporte() {
+        String fechaSeleccionada = (String) JboxPeriodo.getSelectedItem();
+        String codigoEmpresa = JtNo.getText();
+
+        if (fechaSeleccionada == null || codigoEmpresa.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione una fecha y ingrese el código de empresa.");
+            return;
+        }
+
+        // Limpiar la tabla antes de realizar la consulta
+        DefaultTableModel tableModel = (DefaultTableModel) JtReporte.getModel();
+        tableModel.setRowCount(0);
+
+        // Conectar a la base de datos y realizar la consulta
+        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement ps = connection.prepareStatement("SELECT * FROM planillas WHERE TO_CHAR(periodo, 'YYYY-MM-DD') = ? AND empresa_codigo = ?")) {
+
+            ps.setString(1, fechaSeleccionada);
+            ps.setString(2, codigoEmpresa);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                tableModel.addRow(new Object[]{
+                    rs.getInt("id"),
+                    rs.getInt("empresa_codigo"),
+                    rs.getString("empresa_nombre"),
+                    rs.getInt("empleado_codigo"),
+                    rs.getString("empleado_nombre"),
+                    rs.getDate("periodo"),
+                    rs.getDouble("sueldo"),
+                    rs.getString("estado")
+                });
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al consultar las planillas: " + ex.getMessage());
         }
     }
-
-
-    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -433,17 +606,18 @@ public class VGestionPlanilla extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtBuscar;
+    private javax.swing.JButton BtReporte;
+    private javax.swing.JComboBox<String> JboxPeriodo;
     private javax.swing.JTextField JtNo;
+    private javax.swing.JTable JtReporte;
     private javax.swing.JTable JtableCsv;
     private javax.swing.JLabel LbNombre;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
